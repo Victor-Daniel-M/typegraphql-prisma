@@ -88,6 +88,7 @@ export function generateEnhanceMap(
       declarations: [
         {
           name: "crudResolversInfo",
+
           initializer: Writers.object(
             Object.fromEntries(
               modelMappings.map(mapping => [

@@ -13,6 +13,7 @@ import {
   generateArgsImports,
   generateModelsImports,
   generateHelpersFileImport,
+  generateCustomArgsImport,
 } from "../imports";
 import { DmmfDocument } from "../dmmf/dmmf-document";
 import { DMMF } from "../dmmf/types";
@@ -62,6 +63,7 @@ export default function generateRelationsResolverClassesFromModel(
     .map(it => it.argsTypeName!);
   generateArgsImports(sourceFile, argTypeNames, 0);
   generateHelpersFileImport(sourceFile, 3);
+  // generateCustomArgsImport(sourceFile, 5);
 
   sourceFile.addClass({
     name: resolverName,

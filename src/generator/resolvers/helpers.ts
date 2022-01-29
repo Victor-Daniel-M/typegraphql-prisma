@@ -22,6 +22,10 @@ export function generateCrudResolverClassMethodDeclaration(
           }),
         ],
       },
+      {
+        name: `CustomArgs`,
+        arguments: [`"${action.kind}"`],
+      },
     ],
     parameters: [
       {
@@ -65,14 +69,44 @@ export function generateCrudResolverClassMethodDeclaration(
               ),
             });`,
           ]
-        : [
+        : action.kind === DMMF.ModelAction.update
+        ? [
             /* ts */ ` const { _count } = transformFields(
               graphqlFields(info as any)
-            );
-            return getPrismaFromContext(ctx).${mapping.collectionName}.${action.kind}({
+              );
+              return getPrismaFromContext(ctx).${mapping.collectionName}.updateMany({
               ...args,
-              ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
+              ...transformFields(graphqlFields(info as any)),
             });`,
+          ]
+        : action.kind === DMMF.ModelAction.findUnique
+        ? [
+            /* ts */ ` const { _count } = transformFields(
+              graphqlFields(info as any)
+              );
+              return getPrismaFromContext(ctx).${mapping.collectionName}.findFirst({
+              ...args,
+              ...transformFields(graphqlFields(info as any)),
+            });`,
+          ]
+        : action.kind === DMMF.ModelAction.delete
+        ? [
+            /* ts */ `const { _count } = transformFields(
+                    graphqlFields(info as any)
+                    );
+                    return getPrismaFromContext(ctx).${mapping.collectionName}.deleteMany({
+                    ...args,
+                    ...transformFields(graphqlFields(info as any)),
+                  });`,
+          ]
+        : [
+            /* ts */ ` const { _count } = transformFields(
+                      graphqlFields(info as any)
+                    );
+                    return getPrismaFromContext(ctx).${mapping.collectionName}.${action.kind}({
+                      ...args,
+                      ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
+                    });`,
           ],
   };
 }

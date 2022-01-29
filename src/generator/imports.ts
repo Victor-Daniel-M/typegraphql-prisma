@@ -74,6 +74,18 @@ export function generateHelpersFileImport(sourceFile: SourceFile, level = 0) {
   });
 }
 
+export function generateCustomArgsImport(sourceFile: SourceFile, level = 0) {
+  sourceFile.addImportDeclaration({
+    moduleSpecifier:
+      (level === 0 ? "./" : "") +
+      path.posix.join(
+        ...Array(level).fill(".."),
+        "decorators/resolverDecorators",
+      ),
+    namedImports: ["CustomArgs"],
+  });
+}
+
 export function generatePrismaNamespaceImport(
   sourceFile: SourceFile,
   options: GeneratorOptions,
