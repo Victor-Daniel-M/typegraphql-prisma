@@ -10,6 +10,7 @@ import {
   generateGraphQLFieldsImport,
   generateHelpersFileImport,
   generateCustomArgsImport,
+  generateAffectedRowsImport,
 } from "../imports";
 import { generateCrudResolverClassMethodDeclaration } from "./helpers";
 import { DmmfDocument } from "../dmmf/dmmf-document";
@@ -54,6 +55,11 @@ export default function generateActionResolverClass(
     ),
     2,
   );
+
+  if (action.kind == "update") {
+    generateAffectedRowsImport(sourceFile, 2);
+  }
+
   generateHelpersFileImport(sourceFile, 3);
   generateCustomArgsImport(sourceFile, 5);
 

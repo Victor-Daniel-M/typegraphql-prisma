@@ -16,7 +16,11 @@ export function generateCrudResolverClassMethodDeclaration(
       {
         name: `TypeGraphQL.${action.operation}`,
         arguments: [
-          `_returns => ${action.typeGraphQLType}`,
+          `_returns => ${
+            action.kind === DMMF.ModelAction.update
+              ? "AffectedRowsOutput"
+              : action.typeGraphQLType
+          }`,
           Writers.object({
             nullable: `${!action.method.isRequired}`,
           }),
@@ -76,7 +80,7 @@ export function generateCrudResolverClassMethodDeclaration(
               );
               return getPrismaFromContext(ctx).${mapping.collectionName}.updateMany({
               ...args,
-              ...transformFields(graphqlFields(info as any)),
+              ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
             });`,
           ]
         : action.kind === DMMF.ModelAction.findUnique
@@ -86,7 +90,7 @@ export function generateCrudResolverClassMethodDeclaration(
               );
               return getPrismaFromContext(ctx).${mapping.collectionName}.findFirst({
               ...args,
-              ...transformFields(graphqlFields(info as any)),
+              ...(_count && transformCountFieldIntoSelectRelationsCount(_count)),
             });`,
           ]
         : action.kind === DMMF.ModelAction.delete
